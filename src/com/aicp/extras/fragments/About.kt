@@ -15,18 +15,16 @@
  */
 package com.aicp.extras.fragments
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
+import android.content.ComponentName
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.os.SystemProperties
-import android.net.Uri
 import androidx.preference.Preference
 import com.aicp.extras.BaseSettingsFragment
+import com.aicp.extras.Constants
 import com.aicp.extras.HiddenAnimActivity
 import com.aicp.extras.PreferenceMultiClickHandler
 import com.aicp.extras.R
@@ -37,6 +35,7 @@ class About : BaseSettingsFragment() {
     private lateinit var mDeviceMaintainer: Preference
     private lateinit var mAicpVersion: Preference
     private lateinit var mBuildDate: Preference
+    private var mAicpOTA: Preference? = null
 
     companion object {
         private const val PROPERTY_MAINTAINER = "ro.aicp.maintainer"
@@ -46,19 +45,29 @@ class About : BaseSettingsFragment() {
         private const val PROPERTY_BUILD_DATE = "ro.build.date"
         private const val PREF_BUILD_DATE = "build_date"
         private const val PREF_AICP_LOGO = "aicp_logo"
+        private const val PREF_AICP_OTA = "aicp_ota"
+        private const val PREF_LOG_IT = "log_it"
+
+        private val INTENT_OTA = Intent().setComponent(
+            ComponentName(
+                Constants.AICP_OTA_PACKAGE,
+                Constants.AICP_OTA_ACTIVITY
+            )
+        )
     }
 
-    override fun getPreferenceResource(): Int {
-        return R.xml.about
-    }
+    override fun getPreferenceResource(): Int = R.xml.about
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val pm: PackageManager = requireActivity().packageManager
 
         mDeviceMaintainer = findPreference(PREF_DEVICE_MAINTAINER)!!
         mDeviceMaintainer.summary = Build.MODEL
+
         mAicpVersion = findPreference(PREF_AICP_VERSION)!!
         mAicpVersion.summary = SystemProperties.get(PROPERTY_AICP_VERSION, "")
+
         mBuildDate = findPreference(PREF_BUILD_DATE)!!
         mBuildDate.summary = SystemProperties.get(PROPERTY_BUILD_DATE, "")
 
@@ -68,14 +77,27 @@ class About : BaseSettingsFragment() {
             5,
             500
         )
+
+        mAicpOTA = findPreference(PREF_AICP_OTA)
+        if (!Util.isPackageEnabled(Constants.AICP_OTA_PACKAGE, pm)) {
+            mAicpOTA?.let { pref -> pref.parent?.removePreference(pref) }
+        }
+
+        val logIt = findPreference<Preference>(PREF_LOG_IT)
+        Util.requireRoot(requireActivity(), logIt)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        return if (preference == mDeviceMaintainer) {
-            showMaintainerDialog()
-            true
-        } else {
-            super.onPreferenceTreeClick(preference)
+        return when (preference) {
+            mDeviceMaintainer -> {
+                showMaintainerDialog()
+                true
+            }
+            mAicpOTA -> {
+                startActivity(INTENT_OTA)
+                true
+            }
+            else -> super.onPreferenceTreeClick(preference)
         }
     }
 
@@ -108,4 +130,3 @@ class About : BaseSettingsFragment() {
         }
     }
 }
-

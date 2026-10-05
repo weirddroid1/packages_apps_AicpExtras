@@ -15,18 +15,13 @@
  */
 package com.aicp.extras.fragments
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.animation.AccelerateInterpolator
 import androidx.preference.Preference
 import com.aicp.extras.BaseSettingsFragment
-import com.aicp.extras.Constants
 import com.aicp.extras.R
-import com.aicp.extras.utils.Util
 import com.aicp.gear.preference.LongClickablePreference
 import com.plattysoft.leonids.ParticleSystem
 import java.util.Random
@@ -35,19 +30,9 @@ class Dashboard : BaseSettingsFragment() {
 
     companion object {
         private const val PREF_AICP_LOGO = "aicp_logo"
-        private const val PREF_AICP_OTA = "aicp_ota"
-        private const val PREF_LOG_IT = "log_it"
-
-        private val INTENT_OTA = Intent().setComponent(
-            ComponentName(
-                Constants.AICP_OTA_PACKAGE,
-                Constants.AICP_OTA_ACTIVITY
-            )
-        )
     }
 
     private lateinit var aicpLogo: LongClickablePreference
-    private lateinit var aicpOTA: Preference
 
     private val random = Random()
     private var logoClickCount = 0
@@ -57,17 +42,7 @@ class Dashboard : BaseSettingsFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pm: PackageManager = requireActivity().packageManager
-
         aicpLogo = findPreference(PREF_AICP_LOGO)!!
-        aicpOTA = findPreference(PREF_AICP_OTA)!!
-
-        if (!Util.isPackageEnabled(Constants.AICP_OTA_PACKAGE, pm)) {
-            aicpOTA.parent?.removePreference(aicpOTA)
-        }
-
-        val logIt = findPreference<Preference>(PREF_LOG_IT)
-        Util.requireRoot(requireActivity(), logIt)
 
         setupLogoClick()
         setupLogoLongClick()
@@ -94,7 +69,7 @@ class Dashboard : BaseSettingsFragment() {
             ps.setScaleRange(0.7f, 1.3f)
             ps.setSpeedRange(0.1f, 0.25f)
             ps.setAcceleration(0.0001f, thirdRandom)
-            ps.setRotationSpeedRange(firstRandom.toFloat(), secondRandom.toFloat())            
+            ps.setRotationSpeedRange(firstRandom.toFloat(), secondRandom.toFloat())
             ps.setFadeOut(200, AccelerateInterpolator())
             ps.oneShot(view, 100)
 
@@ -120,20 +95,10 @@ class Dashboard : BaseSettingsFragment() {
             ps.setScaleRange(0.7f, 1.3f)
             ps.setSpeedRange(0.1f, 0.25f)
             ps.setAcceleration(0.0001f, thirdRandom)
-            ps.setRotationSpeedRange(firstRandom.toFloat(), secondRandom.toFloat())            
+            ps.setRotationSpeedRange(firstRandom.toFloat(), secondRandom.toFloat())
             ps.setFadeOut(1000, AccelerateInterpolator())
             ps.oneShot(view, 100)
-
             true
-        }
-    }
-
-    override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        return if (preference == aicpOTA || preference == aicpLogo) {
-            startActivity(INTENT_OTA)
-            true
-        } else {
-            super.onPreferenceTreeClick(preference)
         }
     }
 }

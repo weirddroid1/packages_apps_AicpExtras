@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**
- * Copyright (C) 2017 AICP
+ * Copyright (C) 2026 AICP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,89 +22,40 @@
     android:key="about"
     android:title="@string/about_title">
 
+  <PreferenceCategory
+        android:title="@string/about_title">
+
     <!-- AICP logo -->
     <Preference
         android:key="aicp_logo"
         app:layout="@layout/about_logo" />
 
-    <PreferenceScreen
-        android:title="@string/aicp_changelog_title"
-        app:iconSpaceReserved="false"
-        android:summary="@string/aicp_changelog_summary">
-        <intent android:action="com.aicp.extras.ViewChangelog" />
-    </PreferenceScreen>
-
-    <PreferenceScreen
-        android:title="@string/stats_title"
-        app:iconSpaceReserved="false"
-        android:summary="@string/stats_summary"
-        android:fragment="com.aicp.extras.romstats.AnonymousStats" />
-
-    <PreferenceCategory
-        android:title="@string/weblinks_category">
-
-        <Preference
-            android:key="aicp_downloads"
-            android:title="@string/aicp_downloads_title"
-            android:summary="@string/aicp_downloads_summary">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="@string/aicp_downloads_link" />
-        </Preference>
-
-        <Preference
-            android:title="@string/aicp_website_title"
-            android:summary="@string/aicp_website_summary">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="@string/aicp_website_link" />
-        </Preference>
-
-        <Preference
-            android:title="@string/aicp_walls_title"
-            android:summary="@string/aicp_walls_summary">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="@string/aicp_walls_link" />
-        </Preference>
-
-        <Preference
-            android:title="@string/discord_title"
-            android:summary="@string/discord_summary">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="@string/discord_link" />
-        </Preference>
-
-        <Preference
-            android:title="@string/mastodon_title"
-            android:summary="@string/mastodon_summary">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="@string/mastodon_link" />
-        </Preference>
-
-        <Preference
-            android:title="@string/aicp_gerrit_title"
-            android:summary="@string/aicp_gerrit_summary">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="@string/aicp_gerrit_link" />
-        </Preference>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="@string/info_category">
-
-        <Preference
+    <Preference
             android:key="device_maintainer"
             android:title="@string/device_maintainer_title" />
 
         <Preference
             android:key="aicp_version"
-            android:selectable="false"
             android:title="@string/aicp_version_title" />
 
         <Preference
             android:key="build_date"
-            android:selectable="false"
             android:title="@string/build_date_title" />
 
-    </PreferenceCategory> -->
+    </PreferenceCategory>
 
+    <PreferenceCategory>
+
+        <Preference
+            android:key="aicp_ota"
+            android:title="@string/aicp_ota_title"
+            android:summary="@string/aicp_ota_summary" />
+
+        <Preference
+            android:key="log_it"
+            android:title="@string/log_it_title"
+            android:summary="@string/log_it_summary"
+            android:fragment="com.aicp.extras.fragments.LogIt" />
+
+    </PreferenceCategory>
 </PreferenceScreen>
